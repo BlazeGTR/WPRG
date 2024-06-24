@@ -1,0 +1,160 @@
+body {
+  background-color: #000327;
+}
+
+.main-board {
+    border-radius: 25px;
+    background: #494064;
+    padding: 20px;
+    margin: auto;
+    width: 50%;
+}
+
+.center {
+    text-align: center;
+}
+
+div.post + div.post {
+    margin-top: 15px
+}
+
+.comment{
+    border-radius: 5px;
+    color: white;
+    font-size: 20px;
+    margin-left: 15px;
+    margin-right: 10px;
+    border: 2px solid white;
+    padding-top: 5px;
+    padding-bottom: 2px;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+.comment > .comment {
+    margin-left: 5px;
+    text-align: auto;
+    padding-left: 10px;
+    width: 95%;
+}
+
+.post {
+    border-radius: 5px;
+    color: white;
+    font-size: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 3px solid white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.post-text {
+    font-size: 20px;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.post-header {
+    font-size: 15px;
+    color: pink;
+    text-align: left;
+    border: 3px solid grey;
+    background-color: grey;
+}
+
+.post-title {
+    font-size: 30px;
+    color: white;
+    text-align: center;
+}
+
+div.form
+{
+    display: block;
+    text-align: center;
+}
+form.login
+{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.new-post {
+	box-shadow:inset -3px -4px 4px -1px #54a3f7;
+	background:linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);
+	background-color:#007dc1;
+	border-radius:5px;
+	border:1px solid #124d77;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:8px 24px;
+	text-decoration:none;
+	text-shadow:1px 2px 0px #154682;
+}
+.new-post:hover {
+	background:linear-gradient(to bottom, #0061a7 5%, #007dc1 100%);
+	background-color:#0061a7;
+}
+.new-post:active {
+	position:relative;
+	top:1px;
+}
+
+.date-time {
+    float: right;
+    color: white;
+}
+
+label {
+    color: white;
+}
+
+textarea {
+    width: 80%;
+    height: 200px;
+}
+
+a.title:link {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a.title:hover {
+    color: dimgrey;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a.title:visited {
+    color: dimgrey;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a.reply:link {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a.reply:hover {
+    color: dimgrey;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a.reply:visited {
+    color: dimgrey;
+    font-weight: bold;
+    text-decoration: none;
+}
