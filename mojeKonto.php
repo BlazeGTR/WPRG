@@ -14,11 +14,20 @@
     {
         exit("blad wyboru bazy");
     }
+    if(!isset($_GET["id"]))
+    {
+        $_GET["id"] =$_SESSION["user_id"];
+    }
+    //znajdujemy usera którego to konto
+    $query = "SELECT * FROM uzytkownicy WHERE id=";
+    $query .= $_GET["id"];
+    $result = mysqli_query($db_link,$query);
+    $row = mysqli_fetch_row($result);
 ?>
 
 <html>
     <head>
-        <link rel="stylesheet" href="Styles/MainPageStyle.css">
+        <link rel="stylesheet" href="/Styles/MainPageStyle.css">
         <meta http-equiv="Cache-Control" content="no-store" />
         <meta charset="utf-8">
     </head>
@@ -27,11 +36,11 @@
         <section class="topnav">
             <div>
                 <a href="main.php">Strona główna</a>
-                <a href="#contact">Kontakt</a>
-                <a href="#about">O nas</a>
+                <a href="contact.php">Kontakt</a>
+                <a href="about.php">O nas</a>
             </div>
             <div style="margin-left: auto; margin-right: 0; float: right;">
-                <a href="mojeKonto.php">Moje Konto</a>
+                <a href="mojeKonto.php" class="active">Moje Konto</a>
                 <a href="logout.php">Wyloguj</a>
             </div>
         </section>
@@ -42,10 +51,47 @@
 
     <body>
         <div class="main-board">
-            <div class="form">
-                <a href="newPost.php" class="new-post">Nowe ogłoszenie</a>
+            <div class="post">
+                <?php
+                if($_GET["id"] == $_SESSION["user_id"])
+                {
+                    echo('
+                    <form action="editKonto.php" method="post">
+                    <br>
+                        <button type="submit">Edytuj Konto</button>
+                    </form>
+                    ');
+                }
+                ?>
+                <h1 class="post-header" style="font-size: 150%">
+                    <section style="display: flex">
+                        <div style="align-self: center">
+                            <?php
+                                $pfpPath = './Assets/ProfilePics/pfp_'.$row[0].".png";
+                                if(!file_exists($pfpPath)) $pfpPath = './Assets/ProfilePics/pfp_default.png';
+                                echo('<img src="'.$pfpPath.'" alt="pfp" width="64" height="64" class="profile-pic">');
+                            ?>
+                        </div>
+                        <div style="align-self: center; font-size: 150%; padding-left: 15px">
+                            <?php
+                                echo($row[1]);
+                            ?>
+                        </div>
+                        <div class="date-time" style="text-align: right; margin-left: auto;">
+                            <?php
+                                echo("Data utworzenia:<br>");
+                                echo(substr($row[5], 0, 10));
+                            ?>
+                        </div>
+                    </section>
+                </h1>
             </div>
-            <br>
+            <h2>
+                <div class="center" style="color: white;">
+                    Historia postów:
+                </div>
+            </h2>
+              <br>
             <?php 
             function displayPost($row, $db_link_func)
             {
@@ -57,33 +103,12 @@
                         $query = "SELECT * FROM uzytkownicy WHERE id =";
                         $query .= $row[1]."";
                         $results = mysqli_query($db_link_func,$query);
-                        $rowU = mysqli_fetch_row($results);
-                        echo('
-                        <section style="display: flex">
-                            <div style="align-self: center">');
-                                echo('<a href="mojeKonto.php?id='.$rowU[0].'" class="user">');
-                                $pfpPath = './Assets/ProfilePics/pfp_'.$rowU[0].".png";
-                                if(!file_exists($pfpPath)) $pfpPath = './Assets/ProfilePics/pfp_default.png';
-                                echo('<img src="'.$pfpPath.'" alt="pfp" width="64" height="64" class="profile-pic">');
-                            echo('
-                                </a>
-                            </div>
-                            <div style="align-self: center; font-size: 150%; padding-left: 15px">');
-                                echo('<a href="mojeKonto.php?id='.$rowU[0].'" class="user">');
-                                    echo($rowU[1].'
-                                </a>');
-                            echo('</div>');
-                        echo('<div class="date-time" style="text-align: right; margin-left: auto;">');
-                                $query = "SELECT creationTime FROM uzytkownicy WHERE username='";
-                                $query .= $_SESSION["username"]."'";
-                                $result = mysqli_query($db_link_func,$query);
-                                $rowU = mysqli_fetch_row($result);
-                                echo("Data utworzenia:<br>");
-                                echo(substr($rowU[0], 0, 10));
-                        echo('
-                        </div>
-                    </section>
-                            ');
+                        echo('<section>');
+                            echo(mysqli_fetch_row($results)[1]);    //Autor
+                            echo ('<div class="date-time">');
+                                echo ($row[3]); //data stworzenia
+                            echo ('</div>');
+                        echo('</section>');
                         echo ('<div class="post-title">');  
                             //Tworzymy klikalny tyuł z odnośnikiem do posta
                             $postLink = 'https://blazejm.easyisp.pl/post.php?id=';
@@ -101,7 +126,9 @@
             }
                 //Pokazujemy 5 postów na stronę
                 if(!isset($_GET["page"])) $_GET["page"] = 1;
-                $query = "SELECT * FROM posts WHERE MasterPostID IS NULL ORDER BY `PostID` DESC LIMIT 5 OFFSET ";
+                $query = "SELECT * FROM posts WHERE MasterPostID IS NULL AND AuthorID=";
+                $query .= $_GET["id"];
+                $query .= " ORDER BY `PostID` DESC LIMIT 5 OFFSET ";
                 $query .= ($_GET["page"]-1)*5;
                 $result = mysqli_query($db_link,$query);
                 //Główna tablica
@@ -112,8 +139,7 @@
             ?>
         </div>
     <section class="center">
-        <!-- Nawigacja na dole strony -->
-        <div class="bottomnav">
+         <div class="bottomnav">
                 <!-- lewo -->
                 <div style="flex-basis: 160px">
                     <?php
@@ -121,7 +147,7 @@
                         {
                             if($_GET["page"] > 1)
                             {
-                                echo('<a href="main.php?page='.($_GET["page"]-1).'"> &larr; </a>');
+                                echo('<a href="mojeKonto.php?page='.($_GET["page"]-1).'"> &larr; </a>');
                             }  
                             else
                             {
@@ -129,7 +155,7 @@
                             }
                             for($i = 0; $i <= 2; $i++)
                             {
-                                echo('<a href="main.php?page='.($_GET["page"]-3+$i).'"');
+                                echo('<a href="mojeKonto.php?page='.($_GET["page"]-3+$i).'"');
                                 if($_GET["page"]-3+$i < 1)
                                 {
                                     echo(' style="visibility: hidden">');
@@ -154,13 +180,15 @@
                 <!-- prawo -->
                 <div style="flex-basis: 160px">
                     <?php
-                        $query = "SELECT * FROM posts WHERE MasterPostID IS NULL";
+                        $query = "SELECT * FROM posts WHERE MasterPostID IS NULL AND AuthorID=";
+                        $query .= $_GET["id"];
                         $result = mysqli_query($db_link, $query);
                         $rows = mysqli_num_rows($result);   //ile postów
+                        //$rows = 11;
                         $pages = ceil((($rows)/5));                   //ile stron
                         for($i = 1; $i <= 3; $i++)
                         {
-                            echo('<a href="main.php?page='.($_GET["page"]+$i).'"');
+                            echo('<a href="mojeKonto.php?page='.($_GET["page"]+$i).'"');
                                 if( ($_GET["page"] + $i) > $pages)
                                 {
                                     echo('  style="visibility: hidden">');
@@ -173,7 +201,7 @@
                         }
                         if($_GET["page"] < $pages)
                         {
-                            echo('<a href="main.php?page='.($_GET["page"]+1).'"> &rarr; </a>');
+                            echo('<a href="mojeKonto.php?page='.($_GET["page"]+1).'"> &rarr; </a>');
                         }
                         else
                         {
@@ -183,5 +211,6 @@
                 </div>
         </div>
     </section>
+        </div>
     </body>
 </html>

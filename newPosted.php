@@ -3,7 +3,7 @@
     //echo($_COOKIE["session_id"]."\n".$_SESSION['session_id']);
     if($_COOKIE["session_id"] != $_SESSION['session_id'] || !isset($_COOKIE["session_id"]))
     {
-        header( "refresh:2;url=index.html" );
+        header( "refresh:2;url=index.php" );
         echo("Nie zalogowany!");
         die();
     }

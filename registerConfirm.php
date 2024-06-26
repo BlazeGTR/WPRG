@@ -19,11 +19,12 @@
         //wysyłamy maila z potwierdzeniem i dodajemy do bazy
         echo("Wyslano e-mail z potwierdzeniem");
         echo("\n");
-        $query = "INSERT INTO uzytkownicy (username, password, adres_email, confirmed) VALUES (";
+        $query = "INSERT INTO uzytkownicy (username, password, adres_email, confirmed, creationTime) VALUES (";
         $query .= "'".$_POST["username"]."', ";
         $query .= "'".$_POST["password"]."', ";
         $query .= "'".$_POST["email"]."', ";
-        $query .= "0".")";
+        $query .= "0, ".
+        $query .= "CURRENT_TIME())";
         $result = mysqli_query($db_link,$query);
         echo("\n");
         //echo($query);

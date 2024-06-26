@@ -1,14 +1,11 @@
 <?php
     session_start();
-    echo($_COOKIE["session_id"]."\n".$_SESSION['session_id']);
     if($_COOKIE["session_id"] != $_SESSION['session_id'] || !isset($_COOKIE["session_id"]))
     {
-        header( "refresh:2;url=index.html" );
+        header( "refresh:2;url=index.php" );
         echo("Nie zalogowany!");
         die();
     }
-    echo("Strona glowna");
-    echo("cookie".empty($_COOKIE["session_id"]));
     if(!$db_link = mysqli_connect("localhost", "blazejm_s29101_WPRG", "G8h44zHNVcptDg98KuDb"))
     {
         exit("blad polaczenia z baza danych");
@@ -25,6 +22,23 @@
         <meta http-equiv="Cache-Control" content="no-store" />
         <meta charset="utf-8">
     </head>
+
+    <header class="center">
+        <section class="topnav">
+            <div>
+                <a href="main.php">Strona główna</a>
+                <a href="#contact">Kontakt</a>
+                <a href="#about">O nas</a>
+            </div>
+            <div style="margin-left: auto; margin-right: 0; float: right;">
+                <a href="mojeKonto.php">Moje Konto</a>
+                <a href="logout.php">Wyloguj</a>
+            </div>
+        </section>
+        <a href="https://blazejm.easyisp.pl/main.php">
+           <img src="/Assets/logo.png" alt="Logo">
+        </a>
+    </header>
 
     <body>
         <div class="main-board">
@@ -44,11 +58,25 @@
                                 echo ('<div class="date-time">');
                                     echo ($row[3]); //data stworzenia
                                 echo ('</div>');
-                                    echo("<br>");
+                                    echo("<br>");   //Link do odpowiedzi
                                     $link = '<a href="https://blazejm.easyisp.pl/newPost.php?id=';
                                     $link .= $row[0];
-                                    $link .= '" class="reply">Odpowiedz -></a>';
+                                    $link .= '" class="reply">Odpowiedz ->  </a>&emsp;';
                                     echo($link);
+                                    if($row[1] == $_SESSION["user_id"])  //Link do edycji tylko jak nasz post
+                                    {
+                                        $link = '<a href="https://blazejm.easyisp.pl/editPost.php?id=';
+                                        $link .= $row[0];
+                                        $link .= '" class="reply">Edytuj -></a>&emsp;';
+                                        echo($link);
+                                    }
+                                    if($row[1] == $_SESSION["user_id"] || $_SESSION['privilege_level'] > 0)  //Link do edycji tylko jak nasz post
+                                    {
+                                        $link = '<a href="https://blazejm.easyisp.pl/deletePost.php?id=';
+                                        $link .= $row[0];
+                                        $link .= '" class="reply">Usuń -></a>&emsp;';
+                                        echo($link);
+                                    }
                             echo('</section>');
                         echo ('</h1>');
                         //Post text
@@ -81,6 +109,21 @@
                                 echo ('<div class="date-time">');
                                     echo ($row[3]); //data stworzenia
                                 echo ('</div>');
+                                echo ('<br>');
+                                if($row[1] == $_SESSION["user_id"])  //Link do edycji tylko jak nasz post
+                                {
+                                        $link = '<a href="https://blazejm.easyisp.pl/editPost.php?id=';
+                                        $link .= $row[0];
+                                        $link .= '" class="reply">Edytuj -></a>&emsp;';
+                                        echo($link);
+                                }
+                                if($row[1] == $_SESSION["user_id"] || $_SESSION['privilege_level'] > 0)  //Link do edycji tylko jak nasz post
+                                {
+                                    $link = '<a href="https://blazejm.easyisp.pl/deletePost.php?id=';
+                                    $link .= $row[0];
+                                    $link .= '" class="reply">Usuń -></a>&emsp;';
+                                    echo($link);
+                                }
                             echo('</section>');
                             echo ('<div class="post-title">');  
                                 echo($row[4]);

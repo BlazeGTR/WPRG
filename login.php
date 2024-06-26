@@ -26,9 +26,16 @@
         header( "refresh:2;url=main.php" );
         echo("Zalogowano!");
         $seed = rand(0, 1000);
-        $sessionid = $_POST["username"].".".mysqli_fetch_row($result)[0].".".$seed;     //id sesji = nazwa+id+random
+        $row = mysqli_fetch_row($result);
+        $user_id =$row[0];
+        $user_privilege_level = $row[6];
+        $sessionid = $_POST["username"].".".$user_id.".".$seed;     //id sesji = nazwa+id+random
         $_SESSION['session_id'] = $sessionid;
-        setcookie("session_id",$sessionid,time()+60*30);
+        $_SESSION['username'] = $_POST["username"];
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['privilege_level'] = $user_privilege_level;
+        setcookie("session_id",$sessionid,time()+60*60);
+        echo($_SESSION['privilege_level']);
         mysqli_close($db_link);
     }
 ?>

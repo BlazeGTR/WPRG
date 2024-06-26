@@ -1,14 +1,11 @@
 <?php
     session_start();
-    echo($_COOKIE["session_id"]."\n".$_SESSION['session_id']);
     if($_COOKIE["session_id"] != $_SESSION['session_id'] || !isset($_COOKIE["session_id"]))
     {
-        header( "refresh:2;url=index.html" );
+        header( "refresh:2;url=index.php" );
         echo("Nie zalogowany!");
         die();
     }
-    echo("Strona glowna");
-    echo("cookie".empty($_COOKIE["session_id"]));
     if(!$db_link = mysqli_connect("localhost", "blazejm_s29101_WPRG", "G8h44zHNVcptDg98KuDb"))
     {
         exit("blad polaczenia z baza danych");
@@ -25,6 +22,22 @@
         <meta http-equiv="Cache-Control" content="no-store" />
         <meta charset="utf-8">
     </head>
+    <header class="center">
+        <section class="topnav">
+            <div>
+                <a href="main.php">Strona główna</a>
+                <a href="#contact">Kontakt</a>
+                <a href="#about">O nas</a>
+            </div>
+            <div style="margin-left: auto; margin-right: 0; float: right;">
+                <a href="mojeKonto.php">Moje Konto</a>
+                <a href="logout.php">Wyloguj</a>
+            </div>
+        </section>
+        <a href="https://blazejm.easyisp.pl/main.php">
+           <img src="/Assets/logo.png" alt="Logo">
+        </a>
+    </header>
 
     <body>
         <div class="main-board">
@@ -44,42 +57,47 @@
                 }
                 else
                 {
-                    $link = '<form action="newPosted.php?ReplyID='.$_GET["id"].'" method="post">';
-                    echo($link);
-                    $query = "SELECT * FROM posts WHERE PostID =";
-                    $query .= $_GET["id"];
-                    $result = mysqli_query($db_link,$query);
-                    $row = mysqli_fetch_row($result);
-                    echo("<br>");
-                    if(!empty($row)){
-                        //Zaczynamy post
-                        echo ('<div class="post">');
-                        //zaczynamy nagłówek
-                        echo('<h1 class="post-header">');
-                            //Szukamy nazwy usera po id
-                            $query = "SELECT * FROM uzytkownicy WHERE id =";
-                            $query .= $row[1]."";
-                            $results = mysqli_query($db_link,$query);
-                                echo('<section>');
-                                    echo(mysqli_fetch_row($results)[1]);    //Autor
-                                    echo ('<div class="date-time">');
-                                        echo ($row[3]); //data stworzenia
-                                    echo ('</div>');
-                                echo('</section>');
-                            echo ('</h1>');
-                            //Post text
-                            echo ('<div class="post-text">');
-                                echo($row[2]);  //Główny text postu
-                            echo ('</div>');
-                        echo ("</div>");
-                    }
-                    else
+                    if(!is_numeric($_GET["id"]))
                     {
-                        echo('<h1 class="post-header">');
-                            echo("Błędny link!");
-                            $badLink = true;
-                        echo('</h1>');
+                        echo("Błędny link!");
+                        die();
                     }
+                        $link = '<form action="newPosted.php?ReplyID='.$_GET["id"].'" method="post">';
+                        echo($link);
+                        $query = "SELECT * FROM posts WHERE PostID =";
+                        $query .= $_GET["id"];
+                        $result = mysqli_query($db_link,$query);
+                        $row = mysqli_fetch_row($result);
+                        echo("<br>");
+                        if(!empty($row)){
+                            //Zaczynamy post
+                            echo ('<div class="post">');
+                            //zaczynamy nagłówek
+                            echo('<h1 class="post-header">');
+                                //Szukamy nazwy usera po id
+                                $query = "SELECT * FROM uzytkownicy WHERE id =";
+                                $query .= $row[1]."";
+                                $results = mysqli_query($db_link,$query);
+                                    echo('<section>');
+                                        echo(mysqli_fetch_row($results)[1]);    //Autor
+                                        echo ('<div class="date-time">');
+                                            echo ($row[3]); //data stworzenia
+                                        echo ('</div>');
+                                    echo('</section>');
+                                echo ('</h1>');
+                                //Post text
+                                echo ('<div class="post-text">');
+                                    echo($row[2]);  //Główny text postu
+                                echo ('</div>');
+                            echo ("</div>");
+                        }
+                        else
+                        {
+                            echo('<h1 class="post-header">');
+                                echo("Błędny link!");
+                                $badLink = true;
+                            echo('</h1>');
+                        }
                 }
                 if(!$badLink){
                     echo('

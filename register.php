@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="/Styles/MainPageStyle.css">
 </head>
 <body>
-    <div class="post main-board center" style="width: 50%">
+    <div class="post main-board center" style="width: 50%; margin: auto">
         <script src="https://www.google.com/recaptcha/api.js"async defer></script>
         <script src="/Scripts/CaptchaCheck.js"async defer></script>
             <div class="form">
