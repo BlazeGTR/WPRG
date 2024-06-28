@@ -14,6 +14,8 @@
     {
         exit("blad wyboru bazy");
     }
+    if(!isset($_GET["page"])) $_GET["page"] = 1;
+    if(!isset($_GET["board"])) $_GET["board"] = 1;
 ?>
 
 <html>
@@ -24,6 +26,7 @@
     </head>
 
     <header class="center">
+    
         <section class="topnav">
             <div>
                 <a href="main.php">Strona główna</a>
@@ -35,6 +38,11 @@
                 <a href="logout.php">Wyloguj</a>
             </div>
         </section>
+        <div class="leftnav">
+            <a href="main.php?board=1">Główne forum</a> <br>
+            <a href="main.php?board=2">Przywitaj się</a> <br>
+            <a href="main.php?board=3">Aktualności</a>
+        </div>
         <a href="https://blazejm.easyisp.pl/main.php">
            <img src="/Assets/logo.png" alt="Logo">
         </a>
@@ -42,8 +50,38 @@
 
     <body>
         <div class="main-board">
+            <div class="board-title">
+                <?php
+                    switch($_GET["board"])
+                    {
+                        case 1:
+                            echo("Strona główna");
+                            break;
+
+                        case 2:
+                            echo("Przywitaj się");
+                            break;
+
+                        case 3:
+                            echo("Aktualności");
+                            break;
+
+                        default:
+                            echo("Błędne subforum!");
+                            break;
+                    }
+                ?>
+            </div>
+            <br>
             <div class="form">
-                <a href="newPost.php" class="new-post">Nowe ogłoszenie</a>
+                <form method="post" action="newPost.php">
+                <!--<a href="newPost.php" class="new-post">Nowe ogłoszenie</a> -->
+                <?php
+                    echo('<button type="submit" value=');
+                    echo($_GET["board"]);
+                    echo(' name="boardIDref" class="new-post">Nowe ogłoszenie</button>');
+                ?>
+                </form>
             </div>
             <br>
             <?php 
@@ -61,25 +99,21 @@
                         echo('
                         <section style="display: flex">
                             <div style="align-self: center">');
-                                echo('<a href="mojeKonto.php?id='.$rowU[0].'" class="user">');
+                                echo('<a href="mojeKonto.php?id='.$rowU[0].'" class="user">');              //Profilowe
                                 $pfpPath = './Assets/ProfilePics/pfp_'.$rowU[0].".png";
                                 if(!file_exists($pfpPath)) $pfpPath = './Assets/ProfilePics/pfp_default.png';
                                 echo('<img src="'.$pfpPath.'" alt="pfp" width="64" height="64" class="profile-pic">');
                             echo('
                                 </a>
                             </div>
-                            <div style="align-self: center; font-size: 150%; padding-left: 15px">');
+                            <div style="align-self: center; font-size: 150%; padding-left: 15px">');        //Nazwa usera
                                 echo('<a href="mojeKonto.php?id='.$rowU[0].'" class="user">');
                                     echo($rowU[1].'
                                 </a>');
                             echo('</div>');
-                        echo('<div class="date-time" style="text-align: right; margin-left: auto;">');
-                                $query = "SELECT creationTime FROM uzytkownicy WHERE username='";
-                                $query .= $_SESSION["username"]."'";
-                                $result = mysqli_query($db_link_func,$query);
-                                $rowU = mysqli_fetch_row($result);
+                        echo('<div class="date-time" style="text-align: right; margin-left: auto;">');      //data stworzenia postu
                                 echo("Data utworzenia:<br>");
-                                echo(substr($rowU[0], 0, 10));
+                                echo($row[3]);
                         echo('
                         </div>
                     </section>
@@ -100,8 +134,9 @@
                 echo ("</div>");
             }
                 //Pokazujemy 5 postów na stronę
-                if(!isset($_GET["page"])) $_GET["page"] = 1;
-                $query = "SELECT * FROM posts WHERE MasterPostID IS NULL ORDER BY `PostID` DESC LIMIT 5 OFFSET ";
+                $query = "SELECT * FROM posts WHERE MasterPostID IS NULL AND BoardID=";
+                $query .= $_GET["board"];
+                $query .= " ORDER BY `PostID` DESC LIMIT 5 OFFSET ";
                 $query .= ($_GET["page"]-1)*5;
                 $result = mysqli_query($db_link,$query);
                 //Główna tablica
@@ -154,7 +189,8 @@
                 <!-- prawo -->
                 <div style="flex-basis: 160px">
                     <?php
-                        $query = "SELECT * FROM posts WHERE MasterPostID IS NULL";
+                        $query = "SELECT * FROM posts WHERE MasterPostID IS NULL AND BoardID=";
+                        $query .= $_GET["board"];
                         $result = mysqli_query($db_link, $query);
                         $rows = mysqli_num_rows($result);   //ile postów
                         $pages = ceil((($rows)/5));                   //ile stron

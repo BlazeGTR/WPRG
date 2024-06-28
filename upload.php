@@ -15,9 +15,7 @@
         exit("blad wyboru bazy");
     }
 
-    //header("refresh:2;url=MojeKonto.php");
-
-
+    header("refresh:2;url=mojeKonto.php");
     $target_dir = $_POST["path"];
     $target_file = $_POST["name"];
     $target = $target_dir.$target_file;

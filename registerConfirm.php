@@ -17,16 +17,15 @@
     if(mysqli_num_rows($result) == 0)
     {
         //wysyłamy maila z potwierdzeniem i dodajemy do bazy
-        echo("Wyslano e-mail z potwierdzeniem");
-        echo("\n");
         $query = "INSERT INTO uzytkownicy (username, password, adres_email, confirmed, creationTime) VALUES (";
-        $query .= "'".$_POST["username"]."', ";
-        $query .= "'".$_POST["password"]."', ";
-        $query .= "'".$_POST["email"]."', ";
-        $query .= "0, ".
+        $query .= "'".mysqli_real_escape_string($db_link,$_POST["username"])."', ";
+        $query .= "'".mysqli_real_escape_string($db_link,$_POST["password"])."', ";
+        $query .= "'".mysqli_real_escape_string($db_link,$_POST["email"])."', ";
+        $query .= "0, ";
         $query .= "CURRENT_TIME())";
         $result = mysqli_query($db_link,$query);
         echo("\n");
+        //echo("test");
         //echo($query);
         echo("\n");
         if(!$result)
@@ -39,15 +38,13 @@
         $query = "SELECT id FROM uzytkownicy WHERE username ='";
         $query .= $_POST["username"]."'";
         $result = mysqli_query($db_link,$query);
-        $result = mysqli_fetch_row($result);
-        $result = $result[0];
-
+        $row = mysqli_fetch_row($result);
+        $result = $row[0];
         $messageLink = $_POST["username"];
         $messageLink .= ".";
         $messageLink .= $result;
         $messageLink = base64_encode($messageLink);
 
-        echo($_POST["username"]);
 
         //wysyłamy email do potwierdzenia
         $to      = $_POST["email"];
@@ -60,9 +57,14 @@
         'X-Mailer: PHP/' . phpversion();
 
         mail($to, $subject, $message, $headers);
+        
+        //header( "refresh:0;url=index.php" );
+        echo("Wyslano e-mail z potwierdzeniem");
+        echo("\n");
     }
     else
     {
+        //header( "refresh:1;url=register.php" );
         echo("Nazwa uzytkownika jest zajeta");
     }
 

@@ -45,7 +45,7 @@
                 <?php
                 $link ="";
                 $badLink = false;
-                if(!isset($_GET["id"]))
+                if(!isset($_GET["id"])) //Nowy post
                 {
                     $link = '<form action="newPosted.php" method="post">';
                     echo($link);
@@ -55,9 +55,9 @@
                             <input type="text" name="title" required maxlength="30" minlength="3">
                         </div>');
                 }
-                else
+                else                    //Komentarz pod postem
                 {
-                    if(!is_numeric($_GET["id"]))
+                    if(!is_numeric($_GET["id"]))    //id nie jest cyfrą
                     {
                         echo("Błędny link!");
                         die();
@@ -69,7 +69,7 @@
                         $result = mysqli_query($db_link,$query);
                         $row = mysqli_fetch_row($result);
                         echo("<br>");
-                        if(!empty($row)){
+                        if(!empty($row)){       //Jest co komentować
                             //Zaczynamy post
                             echo ('<div class="post">');
                             //zaczynamy nagłówek
@@ -91,7 +91,7 @@
                                 echo ('</div>');
                             echo ("</div>");
                         }
-                        else
+                        else                //nie ma takiego postu do komentarza
                         {
                             echo('<h1 class="post-header">');
                                 echo("Błędny link!");
@@ -108,7 +108,10 @@
                             <textarea name="message" required maxlength="10000" minlength="10">Treść postu</textarea>     
                         </div>
                         <div>
-                            <button type="submit">Post!</button>
+                        ');
+                    echo('<button type="submit" name="boardIDref" value=');
+                    echo($_POST["boardIDref"]);
+                    echo('>Post!</button>
                         </div>
                         ');
                     }

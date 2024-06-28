@@ -18,7 +18,8 @@
     //sprawdzamy czy ktos taki jest w bazie
     $query = "SELECT * FROM uzytkownicy WHERE username ='";
     $query .= $id[0]."' AND ";
-    $query .= "id =".$id[1];
+    $query .= "id=".$id[1];
+    //echo($query);
     $result = mysqli_query($db_link,$query);
     if(mysqli_num_rows($result) == 1)
     {

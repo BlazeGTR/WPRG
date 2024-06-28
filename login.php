@@ -19,11 +19,11 @@
 
     if(mysqli_num_rows($result) == 0)
     {
-        header( "refresh:2;url=index.html" );
+        header( "refresh:2;url=index.php" );
         echo("Bledny login lub haslo!");
     }
     else{
-        header( "refresh:2;url=main.php" );
+        header( "refresh:0;url=main.php" );
         echo("Zalogowano!");
         $seed = rand(0, 1000);
         $row = mysqli_fetch_row($result);

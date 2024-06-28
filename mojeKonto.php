@@ -104,7 +104,7 @@
                         $query .= $row[1]."";
                         $results = mysqli_query($db_link_func,$query);
                         echo('<section>');
-                            echo(mysqli_fetch_row($results)[1]);    //Autor
+                            echo(mysqli_fetch_row($results)[1]);    //autor
                             echo ('<div class="date-time">');
                                 echo ($row[3]); //data stworzenia
                             echo ('</div>');
